@@ -1,13 +1,13 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
-function App() {
+import Router from './router';
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <input className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block appearance-none leading-normal m-10" type="email" placeholder="jane@example.com" />
+    <div className="relative w-screen h-screen overflow-hidden">
+      <Router />
     </div>
   );
-}
+};
 
 export default App;
