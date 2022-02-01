@@ -15,7 +15,20 @@ const Button: React.FC<IProps> = props => {
       <button
         type="button"
         disabled={disabled}
-        className="py-2 px-4 font-medium rounded-full box-border border-2 border-white text-white disabled:opacity-75"
+        className="py-2 px-4 font-medium rounded-full box-border border-2 border-white text-white disabled:opacity-75
+          ease-in-out duration-75"
+      >
+        {children}
+      </button>
+    );
+
+  if (variant === 'primary')
+    return (
+      <button
+        type="button"
+        disabled={disabled}
+        className="py-2 px-4 font-medium rounded-full bg-indigo-500 text-white shadow-md disabled:opacity-75 disabled:shadow-none
+          ease-in-out duration-75"
       >
         {children}
       </button>
@@ -26,7 +39,8 @@ const Button: React.FC<IProps> = props => {
     <button
       type="button"
       disabled={disabled}
-      className="py-2 px-4 font-medium rounded-full bg-white text-gray-900 shadow-sm disabled:opacity-75 disabled:shadow-none"
+      className="py-2 px-4 font-medium rounded-full bg-white text-gray-900 shadow-sm disabled:opacity-75 disabled:shadow-none
+        ease-in-out duration-75"
     >
       {children}
     </button>
