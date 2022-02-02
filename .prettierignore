@@ -2,3 +2,4 @@ node_modules
 coverage
 cdk.out
 template.yaml
+tailwind.config.js
