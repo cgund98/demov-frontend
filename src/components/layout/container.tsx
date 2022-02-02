@@ -28,7 +28,7 @@ const Container: React.FC<IProps> = props => {
     );
 
   return (
-    <div className="bg-gray-50 absolute inset-0 py-6 px-8 flex">
+    <div className="bg-gray-50 absolute inset-0 py-6 px-6 flex">
       <div className="relative w-full md:mx-auto max-w-md">{children}</div>
     </div>
   );

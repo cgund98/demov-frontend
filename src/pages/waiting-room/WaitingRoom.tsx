@@ -1,14 +1,17 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
+
 import CascadeParent from '../../components/animation/CascadeParent';
 import FadeOut from '../../components/animation/fadeOut';
 import Button from '../../components/buttons/button';
 import Card from '../../components/layout/card';
-
 import Container from '../../components/layout/container';
 import Header from '../../components/text/header';
 import UserRow from '../../components/user/userRow';
 
 const WaitingRoom: React.FC = () => {
+  const navigate = useNavigate();
+
   const users: string[] = ['Callum', 'Sam', 'Izzy', 'Tony'];
 
   return (
@@ -31,8 +34,12 @@ const WaitingRoom: React.FC = () => {
 
           <div className="w-full bottom-16 left-0 absolute flex flex-col p-2 space-y-4">
             <FadeOut>
-              <Button variant="primary">Start Swiping</Button>
-              <Button variant="light">Delete Party</Button>
+              <Button variant="primary" onClick={() => navigate('./../')}>
+                Start Swiping
+              </Button>
+              <Button variant="light" onClick={() => navigate('/')}>
+                Delete Party
+              </Button>
             </FadeOut>
           </div>
         </div>
