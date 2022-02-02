@@ -37,6 +37,8 @@ const WaitingRoom: React.FC = () => {
               <Button variant="primary" onClick={() => navigate('./../')}>
                 Start Swiping
               </Button>
+            </FadeOut>
+            <FadeOut>
               <Button variant="light" onClick={() => navigate('/')}>
                 Delete Party
               </Button>

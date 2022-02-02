@@ -21,15 +21,15 @@ const Container: React.FC<IProps> = props => {
         animate="enter"
         initial="initial"
         exit="exit"
-        className="bg-indigo-500 text-white absolute inset-0 py-6 px-10 flex"
+        className="bg-indigo-500 text-white absolute inset-0 py-2 px-3 flex"
       >
         <div className="relative w-full md:mx-auto max-w-md">{children}</div>
       </motion.div>
     );
 
   return (
-    <div className="bg-gray-50 absolute inset-0 py-6 px-6 flex">
-      <div className="relative w-full md:mx-auto max-w-md">{children}</div>
+    <div className="bg-gray-50 absolute inset-0 py-2 px-3 flex flex-col">
+      <div className="relative w-full h-full md:mx-auto max-w-md">{children}</div>
     </div>
   );
 };

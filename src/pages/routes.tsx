@@ -12,7 +12,7 @@ const router: React.FC = () => {
   const location = useLocation();
 
   return (
-    <AnimatePresence exitBeforeEnter initial={false}>
+    <AnimatePresence exitBeforeEnter>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/join" element={<JoinParty />} />

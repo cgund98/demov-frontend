@@ -29,7 +29,7 @@ const IconButton: React.FC<IProps> = props => {
     );
 
   return (
-    <motion.div className="inline-block" whileHover={{scale: 1.2}} whileTap={{scale: 0.8}}>
+    <motion.div className="inline-block" whileHover={{scale: 1.1}} whileTap={{scale: 0.8}}>
       {content}
     </motion.div>
   );

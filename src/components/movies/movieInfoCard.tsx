@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {motion, useMotionValue} from 'framer-motion';
+import {motion} from 'framer-motion';
 
 import Star from '../icons/star';
 import Calendar from '../icons/calendar';
@@ -7,12 +7,6 @@ import ChevronDown from '../icons/chevronDown';
 import IconButton from '../buttons/iconButton';
 import InfoSection from './infoSection';
 import Badge from '../data/badge';
-
-interface IProps {
-  name?: string;
-  open: boolean;
-  toggle: () => void;
-}
 
 // Divider (1px tall horizontal line)
 interface IDivider {
@@ -35,21 +29,26 @@ const buttonVariants = {
   enter: {y: -8, rotate: 180 + 360 * 2},
 };
 
-const swipeConfidenceThreshold = 250000;
+const swipeConfidenceThreshold = 150000;
 const swipePower = (offset: number, velocity: number) => {
   return Math.abs(offset) * velocity;
 };
 
 // Main Movie card
+interface IProps {
+  name?: string;
+}
+
 const MovieInfoCard: React.FC<IProps> = props => {
-  const {open, toggle} = props;
+  const [open, setOpen] = useState<boolean>(false);
+  const toggle = () => setOpen(!open);
 
   const animate = open ? 'open' : 'closed';
 
   const genres = ['Action', 'Thriller'];
 
   return (
-    <motion.div variants={wrapperVariants} animate={animate}>
+    <motion.div className="absolute inset-0 px-4 top-full -mt-20 z-20" variants={wrapperVariants} animate={animate}>
       <motion.div
         drag="y"
         dragConstraints={{bottom: 0, top: 0}}
@@ -62,9 +61,9 @@ const MovieInfoCard: React.FC<IProps> = props => {
             toggle();
           }
         }}
-        className={`z-20 bg-white rounded-xl w-full p-3 shadow-md max-h-96 pb-16 ${open ? 'overflow-y-scroll' : ''}`}
+        className={`z-30 bg-white rounded-xl w-full p-3 shadow-md max-h-96 pb-16 ${open ? 'overflow-y-scroll' : ''}`}
       >
-        <div className="flex flex-col space-y-0.5">
+        <div className="flex flex-col space-y-0.5 z-30">
           <div className="flex flex-row justify-between">
             <p className="text-lg font-bold line-clamp-1">Blade Runner 2049: A second blade runner movie</p>
             <div className="flex flex-row items-center space-x-0.5">
@@ -110,7 +109,7 @@ const MovieInfoCard: React.FC<IProps> = props => {
 
           <InfoSection title="Actors" contents="Denis Villeneuve" />
 
-          <InfoSection title="Title" contents="Blade Runner 2049: A second blade runner movie" />
+          <InfoSection title="Full Title" contents="Blade Runner 2049: A second blade runner movie" />
         </div>
       </motion.div>
     </motion.div>
