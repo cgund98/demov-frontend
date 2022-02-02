@@ -1,11 +1,14 @@
 import React from 'react';
+import {BrowserRouter} from 'react-router-dom';
 
-import Router from './router';
+import Routes from './routes';
 
 const App: React.FC = () => {
   return (
     <div className="relative w-screen h-screen overflow-hidden text-gray-900">
-      <Router />
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
     </div>
   );
 };

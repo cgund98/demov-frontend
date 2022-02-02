@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import App from './pages/App';
 import * as serviceWorkerRegistration from './pwa/serviceWorkerRegistration';
 import './index.css';

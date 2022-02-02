@@ -1,4 +1,5 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
 
 import BigInput from '../../components/input/bigInput';
 import ArrowLeft from '../../components/icons/arrowLeft';
@@ -8,6 +9,8 @@ import IconButton from '../../components/buttons/iconButton';
 import Container from '../../components/layout/container';
 
 const JoinParty: React.FC = () => {
+  const navigate = useNavigate();
+
   return (
     <Container primary>
       <div className="my-3 w-full text-white">
@@ -18,7 +21,7 @@ const JoinParty: React.FC = () => {
         <Button disabled>Join</Button>
       </div>
       <div className="absolute left-4 bottom-10">
-        <IconButton>
+        <IconButton onClick={() => navigate('/')}>
           <ArrowLeft className="w-6 h-6 text-gray-900" />
         </IconButton>
       </div>

@@ -1,12 +1,19 @@
+import {motion} from 'framer-motion';
 import React from 'react';
 
-const IconButton: React.FC = props => {
-  const {children} = props;
+interface IProps {
+  onClick?: () => void;
+}
+
+const IconButton: React.FC<IProps> = props => {
+  const {children, onClick} = props;
 
   return (
-    <button type="button" className="rounded-full bg-white shadow-md p-3">
-      {children}
-    </button>
+    <motion.div whileHover={{scale: 1.2}} whileTap={{scale: 0.8}}>
+      <button onClick={onClick} type="button" className="rounded-full bg-white shadow-md p-3">
+        {children}
+      </button>
+    </motion.div>
   );
 };
 
