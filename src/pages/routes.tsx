@@ -7,6 +7,7 @@ import JoinParty from './join-party/JoinParty';
 import NewParty from './new-party/NewParty';
 import SwipeParty from './swipe-party/SwipeParty';
 import WaitingRoom from './waiting-room/WaitingRoom';
+import ShowMovie from './show-movie/ShowMovie';
 
 const router: React.FC = () => {
   const location = useLocation();
@@ -17,8 +18,9 @@ const router: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/join" element={<JoinParty />} />
         <Route path="/new" element={<NewParty />} />
-        <Route path="/party/:party/wait" element={<WaitingRoom />} />
-        <Route path="/party/:party" element={<SwipeParty />} />
+        <Route path="/party/:partyId/wait" element={<WaitingRoom />} />
+        <Route path="/party/:partyId" element={<SwipeParty />} />
+        <Route path="/movie/:movieId" element={<ShowMovie />} />
       </Routes>
     </AnimatePresence>
   );

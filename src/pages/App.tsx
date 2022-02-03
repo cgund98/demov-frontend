@@ -5,7 +5,7 @@ import Routes from './routes';
 
 const App: React.FC = () => {
   return (
-    <div className="relative w-screen h-screen overflow-hidden text-gray-900">
+    <div className="relative w-screen h-screen overflow-x-hidden text-gray-900">
       <BrowserRouter>
         <Routes />
       </BrowserRouter>
