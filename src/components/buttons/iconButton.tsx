@@ -3,7 +3,7 @@ import React from 'react';
 
 interface IProps {
   onClick?: () => void;
-  variant?: 'light' | 'normal';
+  variant?: 'light' | 'normal' | 'transparent';
   transparent?: boolean;
 }
 

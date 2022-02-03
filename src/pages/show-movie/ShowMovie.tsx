@@ -21,7 +21,7 @@ const SwipeParty: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute left-4 bottom-10">
+      <div className="absolute left-4 bottom-10 z-40">
         <FadeOut standalone>
           <IconButton onClick={() => navigate(-1)}>
             <ArrowLeft className="w-6 h-6 text-gray-900" />

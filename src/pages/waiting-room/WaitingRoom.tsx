@@ -1,15 +1,18 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 
 import CascadeParent from '../../components/animation/CascadeParent';
 import FadeOut from '../../components/animation/fadeOut';
 import Button from '../../components/buttons/button';
+import Modal from '../../components/input/modal';
 import Card from '../../components/layout/card';
 import Container from '../../components/layout/container';
 import Header from '../../components/text/header';
 import UserRow from '../../components/user/userRow';
 
 const WaitingRoom: React.FC = () => {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const users: string[] = ['Callum', 'Sam', 'Izzy', 'Tony'];
@@ -39,13 +42,18 @@ const WaitingRoom: React.FC = () => {
               </Button>
             </FadeOut>
             <FadeOut>
-              <Button variant="light" onClick={() => navigate('/')}>
+              <Button variant="light" onClick={() => setModalOpen(true)}>
                 Delete Party
               </Button>
             </FadeOut>
           </div>
         </div>
       </CascadeParent>
+      <Modal
+        text="Leave party?"
+        show={modalOpen}
+        onChange={confirmed => (confirmed ? navigate('/') : setModalOpen(false))}
+      />
     </Container>
   );
 };

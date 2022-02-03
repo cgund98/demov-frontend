@@ -1,3 +1,4 @@
+import {motion} from 'framer-motion';
 import React from 'react';
 import Close from '../icons/close';
 
@@ -17,12 +18,15 @@ const UserRow: React.FC<IProps> = props => {
       </div>
       <p className="font-medium">{name}</p>
       {deletable ? (
-        <div
+        <motion.div
+          whileTap={{scale: 1.3}}
+          whileHover={{scale: 1.1}}
+          transition={{duration: 0.15}}
           onClick={() => (onDelete ? onDelete(name) : null)}
-          className="rounded-full hover:bg-indigo-100 absolute right-4 p-2"
+          className="rounded-full duration-200 hover:bg-indigo-100 absolute right-4 p-2"
         >
           <Close className="w-5 h-5" />
-        </div>
+        </motion.div>
       ) : null}
     </div>
   );
