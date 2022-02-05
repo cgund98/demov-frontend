@@ -2,13 +2,13 @@ import React, {useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {AnimatePresence} from 'framer-motion';
 
-import CascadeParent from '../../components/animation/CascadeParent';
-import FadeOut from '../../components/animation/fadeOut';
-import MovieCondensed from '../../components/movies/movieCondensed';
-import Header from '../../components/text/header';
-import IconButton from '../../components/buttons/iconButton';
-import Exit from '../../components/icons/exit';
-import Modal from '../../components/input/modal';
+import CascadeParent from 'components/animation/CascadeParent';
+import FadeOut from 'components/animation/fadeOut';
+import MovieCondensed from 'components/movies/movieCondensed';
+import Header from 'components/text/header';
+import IconButton from 'components/buttons/iconButton';
+import Exit from 'components/icons/exit';
+import Modal from 'components/input/modal';
 
 const Results: React.FC = props => {
   const [modalOpen, setModalOpen] = useState<boolean>(false);

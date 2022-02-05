@@ -1,3 +1,5 @@
+import {Buffer} from 'buffer';
+
 // Decode a base64-encoded string
 export const decodeB64 = (input: string): string => {
   const buff = Buffer.from(input, 'base64');

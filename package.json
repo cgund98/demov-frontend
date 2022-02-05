@@ -14,9 +14,11 @@
     "@types/react-dom": "^16.9.14",
     "@types/react-redux": "^7.1.22",
     "axios": "^0.25.0",
+    "buffer": "^6.0.3",
     "framer-motion": "^6.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-input-slider": "^6.0.1",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
@@ -80,5 +82,5 @@
     "prettier": "^2.5.1",
     "tailwindcss": "^3.0.18"
   },
-  "proxy": "https://zvrvf8sl5l.execute-api.us-east-2.amazonaws.com"
+  "proxy": "https://dev.demov.app"
 }

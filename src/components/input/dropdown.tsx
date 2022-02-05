@@ -23,7 +23,7 @@ const Dropdown: React.FC<IProps> = props => {
   useOutsideClick(ref, () => (open ? setOpen(false) : null));
 
   return (
-    <div className="relative">
+    <div className="relative" ref={ref}>
       {/* Button */}
       <button
         disabled={disabled}
@@ -40,7 +40,6 @@ const Dropdown: React.FC<IProps> = props => {
         <div
           className="z-10 inset-x-0 text-base list-none bg-indigo-50 rounded divide-y divide-gray-100 
             shadow-xl absolute my-2 max-h-32 overflow-y-scroll"
-          ref={ref}
         >
           <ul className="py-1">
             {options.map(option => (

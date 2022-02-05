@@ -1,9 +1,9 @@
 import React from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 
-import FadeOut from '../../components/animation/fadeOut';
-import Container from '../../components/layout/container';
-import BottomNav from '../../components/nav/bottomNav';
+import FadeOut from 'components/animation/fadeOut';
+import Container from 'components/layout/container';
+import BottomNav from 'components/nav/bottomNav';
 import Results from './Results';
 import Swiping from './Swiping';
 

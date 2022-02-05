@@ -1,9 +1,9 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import {LoginResponse, JwtPayload} from '../../api/auth/login';
-import {API_PREFIX} from '../../utils/config';
-import {decodeB64} from '../../utils/base64';
+import {LoginResponse, JwtPayload} from 'api/auth/login';
+import {API_PREFIX} from 'utils/config';
+import {decodeB64} from 'utils/base64';
 
 export interface State {
   token?: string;
@@ -11,9 +11,10 @@ export interface State {
   pending: boolean;
 }
 
-export const login = createAsyncThunk('auth/login', async (name: string) => {
+export const login = createAsyncThunk('auth/login', async (input: {name: string}) => {
+  const {name} = input;
   const response = await axios.post<LoginResponse>(`${API_PREFIX}/login`, {name});
-  return response.data;
+  return {data: response.data};
 });
 
 const authSlice = createSlice<State, Record<string, never>, 'auth'>({
@@ -28,9 +29,12 @@ const authSlice = createSlice<State, Record<string, never>, 'auth'>({
       state.pending = true;
     });
     builder.addCase(login.fulfilled, (state, {payload}) => {
-      state.token = payload.token;
+      // Unpack payload
+      const {data} = payload;
+      state.token = data.token;
 
-      const stringJwt = decodeB64(payload.token.split('.')[1]);
+      // Decode user ID from token
+      const stringJwt = decodeB64(data.token.split('.')[1]);
       try {
         const decodedJwt = JSON.parse(stringJwt) as JwtPayload;
         state.id = decodedJwt.sub;

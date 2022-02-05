@@ -14,7 +14,7 @@ const Header: React.FC<IProps> = props => {
   return (
     <div className="flex flex-col space-y-2">
       <Title>{title}</Title>
-      {subtitle ? <p className="text-sm text-gray-600">Join Code: FDJ81L</p> : null}
+      {subtitle ? <p className="text-sm text-gray-600">{subtitle}</p> : null}
     </div>
   );
 };
