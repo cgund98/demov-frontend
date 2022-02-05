@@ -57,6 +57,7 @@ module.exports = {
       'no-new': 'off',
       'no-console': 'off',
       'no-unused-vars': 'off',
+      'no-param-reassign': 'off',
       '@typescript-eslint/no-unused-vars': 'error',
       'no-useless-constructor': 'off',
       '@typescript-eslint/no-useless-constructor': 'error',
