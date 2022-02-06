@@ -4,11 +4,13 @@ import {useDispatch} from 'react-redux';
 import authReducer from './auth/auth';
 import partyReducer from './party/party';
 import membersReducer from './member/members';
+import errorsReducer from './errors/errors';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   party: partyReducer,
   members: membersReducer,
+  errors: errorsReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

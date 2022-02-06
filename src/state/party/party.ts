@@ -2,49 +2,115 @@ import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import {CreatePartyRequest, CreatePartyResponse, Party} from 'api/parties/party';
+import {Member} from 'api/members/member';
 import {API_PREFIX} from 'utils/config';
 import {getAuth} from 'utils/state';
+import {add} from 'state/errors/errors';
 
 export interface State {
   party?: Party;
   pending: boolean;
 }
 
-export const createParty = createAsyncThunk('party/create', async (input: {body: CreatePartyRequest}, thunkAPI) => {
-  const {body} = input;
+// API calls
+export const createParty = createAsyncThunk(
+  'party/create',
+  async (input: {body: CreatePartyRequest}, {getState, dispatch}) => {
+    const {body} = input;
 
-  const response = await axios.post<CreatePartyResponse>(`${API_PREFIX}/parties`, body, {
-    headers: getAuth(thunkAPI.getState()),
-  });
-  return {data: response.data};
+    try {
+      const response = await axios.post<CreatePartyResponse>(`${API_PREFIX}/parties`, body, {
+        headers: getAuth(getState()),
+      });
+      return {data: response.data};
+
+      // Handle errors
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        dispatch(add({message: err.message}));
+      }
+      throw err;
+    }
+  },
+);
+
+export const getParty = createAsyncThunk('party/get', async (partyId: string, {getState, dispatch}) => {
+  try {
+    const response = await axios.get<Party>(`${API_PREFIX}/parties/${partyId}`, {
+      headers: getAuth(getState()),
+    });
+    return {data: response.data};
+
+    // Handle errors
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      dispatch(add({message: err.message}));
+    }
+    throw err;
+  }
 });
 
-export const getParty = createAsyncThunk('party/get', async (partyId: string, thunkAPI) => {
-  const response = await axios.get<Party>(`${API_PREFIX}/parties/${partyId}`, {
-    headers: getAuth(thunkAPI.getState()),
-  });
-  return {data: response.data};
+export const startParty = createAsyncThunk('party/start', async (partyId: string, {getState, dispatch}) => {
+  try {
+    const response = await axios.put<Party>(`${API_PREFIX}/parties/${partyId}`, '', {
+      headers: getAuth(getState()),
+    });
+    return {data: response.data};
+
+    // Handle errors
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      dispatch(add({message: err.message}));
+    }
+    throw err;
+  }
 });
 
-export const startParty = createAsyncThunk('party/start', async (partyId: string, thunkAPI) => {
-  const response = await axios.put<Party>(`${API_PREFIX}/parties/${partyId}`, '', {
-    headers: getAuth(thunkAPI.getState()),
-  });
-  return {data: response.data};
+export const deleteParty = createAsyncThunk('party/delete', async (partyId: string, {getState, dispatch}) => {
+  try {
+    await axios.delete(`${API_PREFIX}/parties/${partyId}`, {
+      headers: getAuth(getState()),
+    });
+
+    // Handle errors
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      dispatch(add({message: err.message}));
+    }
+    throw err;
+  }
 });
 
-export const deleteParty = createAsyncThunk('party/delete', async (partyId: string, thunkAPI) => {
-  await axios.delete(`${API_PREFIX}/parties/${partyId}`, {
-    headers: getAuth(thunkAPI.getState()),
-  });
+export const joinParty = createAsyncThunk('party/join', async (joinCode: string, {getState, dispatch}) => {
+  try {
+    const response = await axios.post<Member>(`${API_PREFIX}/join/${joinCode}`, '', {
+      headers: getAuth(getState()),
+    });
+
+    return {data: response.data};
+
+    // Handle errors
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 404) dispatch(add({message: 'No party found with specified join code.'}));
+      else if (err.response?.status === 403) dispatch(add({message: 'Cannot join a party already in progress.'}));
+      else dispatch(add({message: err.message}));
+    }
+    throw err;
+  }
 });
 
-const partySlice = createSlice<State, Record<string, never>, 'party'>({
+// Reducers
+const partySlice = createSlice({
   name: 'party',
   initialState: {
     pending: false,
+  } as State,
+  reducers: {
+    reset: state => {
+      state.party = undefined;
+    },
   },
-  reducers: {},
   extraReducers: builder => {
     // Create Party
     builder.addCase(createParty.pending, state => {
@@ -56,9 +122,8 @@ const partySlice = createSlice<State, Record<string, never>, 'party'>({
       state.party = data;
       state.pending = false;
     });
-    builder.addCase(createParty.rejected, (state, {payload}) => {
+    builder.addCase(createParty.rejected, state => {
       state.pending = false;
-      console.log(payload);
     });
     // Get Party
     builder.addCase(getParty.pending, state => {
@@ -70,9 +135,8 @@ const partySlice = createSlice<State, Record<string, never>, 'party'>({
       state.party = data;
       state.pending = false;
     });
-    builder.addCase(getParty.rejected, (state, {payload}) => {
+    builder.addCase(getParty.rejected, state => {
       state.pending = false;
-      console.log(payload);
     });
     // Start Party
     builder.addCase(startParty.pending, state => {
@@ -84,22 +148,32 @@ const partySlice = createSlice<State, Record<string, never>, 'party'>({
       state.party = data;
       state.pending = false;
     });
-    builder.addCase(startParty.rejected, (state, {payload}) => {
+    builder.addCase(startParty.rejected, state => {
       state.pending = false;
-      console.log(payload);
     });
-    // Delete member
+    // Delete party
     builder.addCase(deleteParty.pending, state => {
       state.pending = true;
     });
     builder.addCase(deleteParty.fulfilled, state => {
       state.pending = false;
     });
-    builder.addCase(deleteParty.rejected, (state, {payload}) => {
+    builder.addCase(deleteParty.rejected, state => {
       state.pending = false;
-      console.warn(payload);
+    });
+    // Join party
+    builder.addCase(joinParty.pending, state => {
+      state.pending = true;
+    });
+    builder.addCase(joinParty.fulfilled, state => {
+      state.pending = false;
+    });
+    builder.addCase(joinParty.rejected, state => {
+      state.pending = false;
     });
   },
 });
+
+export const {reset} = partySlice.actions;
 
 export default partySlice.reducer;

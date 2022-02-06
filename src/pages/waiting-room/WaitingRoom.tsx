@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
 import {useSelector} from 'react-redux';
+import {AnimatePresence} from 'framer-motion';
+import {unwrapResult} from '@reduxjs/toolkit';
 
 import {RootState, useAppDispatch} from 'state';
-import {deleteParty, getParty} from 'state/party/party';
+import {deleteParty, getParty, startParty} from 'state/party/party';
 import {getMembers, deleteMember} from 'state/member/members';
 import CascadeParent from 'components/animation/CascadeParent';
 import FadeOut from 'components/animation/fadeOut';
@@ -13,7 +15,7 @@ import Card from 'components/layout/card';
 import Container from 'components/layout/container';
 import Header from 'components/text/header';
 import UserRow from 'components/user/userRow';
-import {AnimatePresence, motion} from 'framer-motion';
+import {NotAllowed} from 'utils/errors';
 
 const refreshMS = 1000;
 
@@ -26,11 +28,17 @@ const WaitingRoom: React.FC = () => {
   const dispatch = useAppDispatch();
   const {party: partyState, members: membersState, auth} = useSelector((state: RootState) => state);
 
+  const refreshParty = () =>
+    dispatch(getParty(partyId || ''))
+      .then(unwrapResult)
+      .then(({data: party}) => (party.status === 'active' ? navigate(`/party/${party.partyId}`) : null))
+      .catch(() => null);
+
   // On page load fetch party and members
   useEffect(() => {
     if (partyId) {
-      dispatch(getParty(partyId));
-      dispatch(getMembers(partyId));
+      refreshParty();
+      dispatch(getMembers(partyId)).catch((err: Error) => (err.message === NotAllowed ? navigate('/') : null));
     }
   }, [partyId]);
 
@@ -46,6 +54,7 @@ const WaitingRoom: React.FC = () => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
+      refreshParty();
       dispatch(getMembers(partyId || '')).then(() => setCount(count + 1));
     }, refreshMS);
     return () => clearTimeout(timer);
@@ -59,6 +68,14 @@ const WaitingRoom: React.FC = () => {
     } else {
       dispatch(deleteMember({partyId, memberId: auth.id})).then(() => navigate('/'));
     }
+  };
+
+  // Start the party
+  const start = () => {
+    dispatch(startParty(partyId || ''))
+      .then(unwrapResult)
+      .then(({data: party}) => navigate(`/party/${party.partyId}`))
+      .catch(() => null);
   };
 
   return (
@@ -100,7 +117,7 @@ const WaitingRoom: React.FC = () => {
             {isOwner ? (
               <>
                 <FadeOut>
-                  <Button variant="primary" onClick={() => navigate('./../')}>
+                  <Button variant="primary" onClick={start}>
                     Start Swiping
                   </Button>
                 </FadeOut>
@@ -113,7 +130,7 @@ const WaitingRoom: React.FC = () => {
             ) : (
               <>
                 <FadeOut>
-                  <p>Wait for the host to begin.</p>
+                  <p className="text-center text-gray-600">Wait for the host to begin.</p>
                 </FadeOut>
                 <FadeOut>
                   <Button variant="light" onClick={() => setModalOpen(true)}>

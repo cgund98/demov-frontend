@@ -21,7 +21,8 @@ import Badge from 'components/data/badge';
 
 import {RootState, useAppDispatch} from 'state';
 import {login} from 'state/auth/auth';
-import {createParty} from 'state/party/party';
+import {createParty, reset as resetParty} from 'state/party/party';
+import {reset as resetMembers} from 'state/member/members';
 import Loading from 'components/layout/loading';
 
 const capitalize = (s: string) => s.replace(/^\w/, c => c.toUpperCase());
@@ -124,6 +125,10 @@ const NewParty: React.FC = () => {
       minRating: parseInt(minRating, 10),
       maxSwipes,
     };
+
+    // Reset state in preparation
+    dispatch(resetParty());
+    dispatch(resetMembers());
 
     // Dispatch actions
     dispatch(login({name}))

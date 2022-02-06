@@ -4,35 +4,59 @@ import axios from 'axios';
 import {Member, GetPartyMembersResponse} from 'api/members/member';
 import {API_PREFIX} from 'utils/config';
 import {getAuth} from 'utils/state';
+import {add} from 'state/errors/errors';
 
 export interface State {
   members?: Member[];
   pending: boolean;
 }
 
-export const getMembers = createAsyncThunk('member/get', async (partyId: string, thunkAPI) => {
-  const response = await axios.get<GetPartyMembersResponse>(`${API_PREFIX}/parties/${partyId}/members`, {
-    headers: getAuth(thunkAPI.getState()),
-  });
-  return {data: response.data};
+export const getMembers = createAsyncThunk('member/get', async (partyId: string, {getState, dispatch}) => {
+  try {
+    const response = await axios.get<GetPartyMembersResponse>(`${API_PREFIX}/parties/${partyId}/members`, {
+      headers: getAuth(getState()),
+    });
+    return {data: response.data};
+
+    // Handle errors
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      if (err.response?.status === 403) dispatch(add({message: '', redirect: '/'}));
+      else dispatch(add({message: err.message}));
+    }
+    throw err;
+  }
 });
 
 export const deleteMember = createAsyncThunk(
   'member/delete',
-  async (input: {partyId: string; memberId: string}, thunkAPI) => {
-    const {partyId, memberId} = input;
-    await axios.delete(`${API_PREFIX}/parties/${partyId}/members/${memberId}`, {
-      headers: getAuth(thunkAPI.getState()),
-    });
+  async (input: {partyId: string; memberId: string}, {getState, dispatch}) => {
+    try {
+      const {partyId, memberId} = input;
+      await axios.delete(`${API_PREFIX}/parties/${partyId}/members/${memberId}`, {
+        headers: getAuth(getState()),
+      });
+
+      // Handle errors
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        dispatch(add({message: err.message}));
+      }
+      throw err;
+    }
   },
 );
 
-const memberSlice = createSlice<State, Record<string, never>, 'member'>({
+const memberSlice = createSlice({
   name: 'member',
   initialState: {
     pending: false,
+  } as State,
+  reducers: {
+    reset: state => {
+      state.members = undefined;
+    },
   },
-  reducers: {},
   extraReducers: builder => {
     // Get Members
     builder.addCase(getMembers.pending, state => {
@@ -44,9 +68,8 @@ const memberSlice = createSlice<State, Record<string, never>, 'member'>({
       state.members = data.sort((a, b) => (a.joinTime > b.joinTime ? 1 : -1));
       state.pending = false;
     });
-    builder.addCase(getMembers.rejected, (state, {payload}) => {
+    builder.addCase(getMembers.rejected, state => {
       state.pending = false;
-      console.warn(payload);
     });
     // Delete member
     builder.addCase(deleteMember.pending, state => {
@@ -55,11 +78,12 @@ const memberSlice = createSlice<State, Record<string, never>, 'member'>({
     builder.addCase(deleteMember.fulfilled, state => {
       state.pending = false;
     });
-    builder.addCase(deleteMember.rejected, (state, {payload}) => {
+    builder.addCase(deleteMember.rejected, state => {
       state.pending = false;
-      console.warn(payload);
     });
   },
 });
+
+export const {reset} = memberSlice.actions;
 
 export default memberSlice.reducer;
