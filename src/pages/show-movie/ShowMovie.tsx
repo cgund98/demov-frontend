@@ -1,6 +1,9 @@
 import {AnimatePresence} from 'framer-motion';
-import React from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {useSelector} from 'react-redux';
+import {useNavigate, useParams} from 'react-router-dom';
+import {RootState, useAppDispatch} from 'state';
+import {getMovie, removeMovie} from 'state/movie/movieReducer';
 
 import FadeOut from '../../components/animation/fadeOut';
 import IconButton from '../../components/buttons/iconButton';
@@ -11,13 +14,34 @@ import MovieCard from '../../components/movies/movieCard';
 const SwipeParty: React.FC = () => {
   const navigate = useNavigate();
 
-  const curElement = '12321';
+  // Route params
+  const {movieId} = useParams();
+  if (movieId === undefined) return null;
+
+  // Redux
+  const dispatch = useAppDispatch();
+  const {movie} = useSelector((state: RootState) => state);
+
+  useEffect(() => {
+    dispatch(getMovie(movieId));
+  }, [movieId]);
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      dispatch(removeMovie(movieId));
+    };
+  }, []);
+
+  const curMovie = movie.movies?.[movieId];
 
   return (
     <Container>
       <div>
         <div className="relative h-[80vh]">
-          <AnimatePresence exitBeforeEnter>{curElement ? <MovieCard key={curElement} /> : null}</AnimatePresence>
+          <AnimatePresence exitBeforeEnter>
+            {curMovie ? <MovieCard key={movieId} movie={curMovie} /> : null}
+          </AnimatePresence>
         </div>
       </div>
 

@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
-import {useNavigate} from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import {AnimatePresence} from 'framer-motion';
+import {useSelector} from 'react-redux';
 
 import CascadeParent from 'components/animation/CascadeParent';
 import FadeOut from 'components/animation/fadeOut';
@@ -10,10 +11,48 @@ import IconButton from 'components/buttons/iconButton';
 import Exit from 'components/icons/exit';
 import Modal from 'components/input/modal';
 
-const Results: React.FC = props => {
+import {RootState, useAppDispatch} from 'state';
+import {getPartyMovies} from 'state/party-movie/partyMovies';
+import {unwrapResult} from '@reduxjs/toolkit';
+import {getMovie} from 'state/movie/movieReducer';
+
+const refreshMS = 10 * 1000;
+
+const Results: React.FC = () => {
+  const {partyId} = useParams();
+  if (partyId === undefined) return null;
+
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
   const navigate = useNavigate();
+
+  const dispatch = useAppDispatch();
+  const {partyMovies, movie} = useSelector((state: RootState) => state);
+
+  const refresh = () =>
+    dispatch(getPartyMovies(partyId))
+      .then(unwrapResult)
+      .then(({data}) =>
+        data.forEach(m => {
+          dispatch(getMovie(m.movieId));
+        }),
+      )
+      .catch(() => null);
+
+  useEffect(() => {
+    refresh();
+  }, [partyId]);
+
+  // Refresh members on a timer
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      refresh();
+      setCount(count + 1);
+    }, refreshMS);
+    return () => clearTimeout(timer);
+  });
 
   return (
     <CascadeParent>
@@ -25,14 +64,13 @@ const Results: React.FC = props => {
           <AnimatePresence exitBeforeEnter>
             <CascadeParent>
               <div className="flow flow-col space-y-4">
-                <MovieCondensed />
-                <MovieCondensed />
-                <MovieCondensed />
-                <MovieCondensed />
-                <MovieCondensed />
-                <MovieCondensed />
-                <MovieCondensed />
-                <MovieCondensed />
+                {partyMovies.movies
+                  ?.filter(m => m.score > 0)
+                  .map(m => {
+                    const movObj = movie.movies?.[m.movieId];
+                    if (movObj === undefined) return null;
+                    return <MovieCondensed key={m.movieId} movie={movObj} score={m.score} />;
+                  })}
               </div>
             </CascadeParent>
           </AnimatePresence>

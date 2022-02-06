@@ -1,6 +1,8 @@
 import React, {useState} from 'react';
 import {motion} from 'framer-motion';
 
+import {Movie} from 'api/movies/movie';
+
 import Star from '../icons/star';
 import Calendar from '../icons/calendar';
 import ChevronDown from '../icons/chevronDown';
@@ -37,15 +39,16 @@ const swipePower = (offset: number, velocity: number) => {
 // Main Movie card
 interface IProps {
   name?: string;
+  movie: Movie;
 }
 
-const MovieInfoCard: React.FC<IProps> = props => {
+const MovieInfoCard: React.FC<IProps> = ({movie}) => {
   const [open, setOpen] = useState<boolean>(false);
   const toggle = () => setOpen(!open);
 
   const animate = open ? 'open' : 'closed';
 
-  const genres = ['Action', 'Thriller'];
+  const genres = movie.genres.split(', ');
 
   return (
     <motion.div className="absolute inset-0 px-4 top-full -mt-20 z-20" variants={wrapperVariants} animate={animate}>
@@ -65,16 +68,16 @@ const MovieInfoCard: React.FC<IProps> = props => {
       >
         <div className="flex flex-col space-y-0.5 z-30">
           <div className="flex flex-row justify-between">
-            <p className="text-lg font-bold line-clamp-1">Blade Runner 2049: A second blade runner movie</p>
+            <p className="text-lg font-bold line-clamp-1">{movie.title}</p>
             <div className="flex flex-row items-center space-x-0.5">
-              <p>7.2</p>
+              <p>{movie.ratings.imdb}</p>
               <Star className="h-3.5 w-3.5 text-yellow-500 -mt-px" />
             </div>
           </div>
 
           <div className="flex flex-row items-center space-x-1 text-gray-600">
             <Calendar className="h-3.5 w-3.5" />
-            <p>2017</p>
+            <p>{movie.year}</p>
           </div>
         </div>
 
@@ -92,10 +95,7 @@ const MovieInfoCard: React.FC<IProps> = props => {
 
         <div className="flex flex-col space-y-3 overflow-hidden mt-2">
           <div className="flex flex-col space-y-2 py-2">
-            <p className="gray-700 text-sm">
-              Young Blade Runner K's discovery of a long-buried secret leads him to track down former Blade Runner Rick
-              Deckard, who's been missing for thirty years.
-            </p>
+            <p className="gray-700 text-sm">{movie.plot}</p>
             <div className="flex flex-row space-x-2">
               {genres.map(genre => (
                 <Badge key={genre}>{genre}</Badge>
@@ -105,11 +105,13 @@ const MovieInfoCard: React.FC<IProps> = props => {
 
           <Divider />
 
-          <InfoSection title="Director" contents="Denis Villeneuve" />
+          <InfoSection title="Director" contents={movie.director} />
 
-          <InfoSection title="Actors" contents="Denis Villeneuve" />
+          <InfoSection title="Actors" contents={movie.stars} />
 
-          <InfoSection title="Full Title" contents="Blade Runner 2049: A second blade runner movie" />
+          <InfoSection title="Full Title" contents={movie.title} />
+
+          <InfoSection title="Runtime" contents={movie.runtime} />
         </div>
       </motion.div>
     </motion.div>

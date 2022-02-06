@@ -1,8 +1,8 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import {CreatePartyRequest, CreatePartyResponse, Party} from 'api/parties/party';
-import {Member} from 'api/members/member';
+import {CreatePartyRequest, CreatePartyResponse, GetPartyResponse, Party, StartPartyResponse} from 'api/parties/party';
+import {JoinPartyResponse} from 'api/members/member';
 import {API_PREFIX} from 'utils/config';
 import {getAuth} from 'utils/state';
 import {add} from 'state/errors/errors';
@@ -36,7 +36,7 @@ export const createParty = createAsyncThunk(
 
 export const getParty = createAsyncThunk('party/get', async (partyId: string, {getState, dispatch}) => {
   try {
-    const response = await axios.get<Party>(`${API_PREFIX}/parties/${partyId}`, {
+    const response = await axios.get<GetPartyResponse>(`${API_PREFIX}/parties/${partyId}`, {
       headers: getAuth(getState()),
     });
     return {data: response.data};
@@ -52,7 +52,7 @@ export const getParty = createAsyncThunk('party/get', async (partyId: string, {g
 
 export const startParty = createAsyncThunk('party/start', async (partyId: string, {getState, dispatch}) => {
   try {
-    const response = await axios.put<Party>(`${API_PREFIX}/parties/${partyId}`, '', {
+    const response = await axios.put<StartPartyResponse>(`${API_PREFIX}/parties/${partyId}`, '', {
       headers: getAuth(getState()),
     });
     return {data: response.data};
@@ -83,7 +83,7 @@ export const deleteParty = createAsyncThunk('party/delete', async (partyId: stri
 
 export const joinParty = createAsyncThunk('party/join', async (joinCode: string, {getState, dispatch}) => {
   try {
-    const response = await axios.post<Member>(`${API_PREFIX}/join/${joinCode}`, '', {
+    const response = await axios.post<JoinPartyResponse>(`${API_PREFIX}/join/${joinCode}`, '', {
       headers: getAuth(getState()),
     });
 

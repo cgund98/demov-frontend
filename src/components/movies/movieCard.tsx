@@ -2,6 +2,9 @@ import React from 'react';
 import {motion, useMotionValue, useDragControls, useTransform} from 'framer-motion';
 import {useWindowWidth} from '@react-hook/window-size';
 
+import {Movie} from 'api/movies/movie';
+import {API_PREFIX} from 'utils/config';
+
 import MovieInfoCard from './movieInfoCard';
 
 // Swiping threshold
@@ -13,10 +16,11 @@ interface IProps {
   onChange?: (liked: boolean) => void;
   liked?: boolean;
   active?: boolean;
+  movie: Movie;
 }
 
 const MovieCard: React.FC<IProps> = props => {
-  const {onChange = () => ({}), active, liked} = props;
+  const {onChange = () => ({}), active, liked, movie} = props;
 
   const dragControls = useDragControls();
   const x = useMotionValue(0);
@@ -29,11 +33,13 @@ const MovieCard: React.FC<IProps> = props => {
   // Update variants
   let exitX = '0';
   if (liked !== undefined) exitX = liked ? '100vw' : '-100vw';
+  let exitY = 10;
+  if (liked !== undefined) exitY = 0;
 
   const variants = {
     initial: {y: 10, x: 0, scale: 0.95, opacity: 0},
     enter: {y: 0, x: 0, scale: 1, opacity: 1, transition: {duration: 0.35, type: 'spring'}},
-    exit: {y: 10, x: exitX, opacity: 1, transition: {duration: 0.35, type: 'spring'}},
+    exit: {y: exitY, x: exitX, opacity: 1, transition: {duration: 0.35, type: 'spring'}},
   };
 
   return (
@@ -64,10 +70,10 @@ const MovieCard: React.FC<IProps> = props => {
           <div className="inset-0 absolute z-10 bg-indigo-200" onPointerDown={e => active && dragControls.start(e)}>
             <motion.div className="absolute bottom-0 inset-0 z-10 bg-red-500" style={{opacity: redOpacity}} />
             <motion.div className="absolute bottom-0 inset-0 z-10 bg-green-500" style={{opacity: greenOpacity}} />
-            <img className="object-cover h-full w-full " src="/movies/blade-runner.jpg" />
+            <img className="object-cover h-full w-full " src={`${API_PREFIX}/${movie.imageUrlHR}`} />
             <div className="absolute bottom-0 inset-x-0 z-0 h-24 from-black bg-gradient-to-t" />
           </div>
-          <MovieInfoCard />
+          <MovieInfoCard movie={movie} />
         </div>
       </motion.div>
     </div>

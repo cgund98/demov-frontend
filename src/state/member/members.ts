@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import {Member, GetPartyMembersResponse} from 'api/members/member';
+import {Member, ListPartyMembersResponse} from 'api/members/member';
 import {API_PREFIX} from 'utils/config';
 import {getAuth} from 'utils/state';
 import {add} from 'state/errors/errors';
@@ -13,7 +13,7 @@ export interface State {
 
 export const getMembers = createAsyncThunk('member/get', async (partyId: string, {getState, dispatch}) => {
   try {
-    const response = await axios.get<GetPartyMembersResponse>(`${API_PREFIX}/parties/${partyId}/members`, {
+    const response = await axios.get<ListPartyMembersResponse>(`${API_PREFIX}/parties/${partyId}/members`, {
       headers: getAuth(getState()),
     });
     return {data: response.data};

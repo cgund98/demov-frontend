@@ -5,8 +5,8 @@ import {AnimatePresence} from 'framer-motion';
 import {unwrapResult} from '@reduxjs/toolkit';
 
 import {RootState, useAppDispatch} from 'state';
-import {deleteParty, getParty, startParty} from 'state/party/party';
-import {getMembers, deleteMember} from 'state/member/members';
+import {deleteParty, getParty, startParty, reset as resetParty} from 'state/party/party';
+import {getMembers, deleteMember, reset as resetMembers} from 'state/member/members';
 import CascadeParent from 'components/animation/CascadeParent';
 import FadeOut from 'components/animation/fadeOut';
 import Button from 'components/buttons/button';
@@ -24,12 +24,13 @@ const WaitingRoom: React.FC = () => {
 
   const navigate = useNavigate();
   const {partyId} = useParams();
+  if (partyId === undefined) return null;
 
   const dispatch = useAppDispatch();
   const {party: partyState, members: membersState, auth} = useSelector((state: RootState) => state);
 
   const refreshParty = () =>
-    dispatch(getParty(partyId || ''))
+    dispatch(getParty(partyId))
       .then(unwrapResult)
       .then(({data: party}) => (party.status === 'active' ? navigate(`/party/${party.partyId}`) : null))
       .catch(() => null);
@@ -55,10 +56,19 @@ const WaitingRoom: React.FC = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       refreshParty();
-      dispatch(getMembers(partyId || '')).then(() => setCount(count + 1));
+      dispatch(getMembers(partyId)).then(() => setCount(count + 1));
     }, refreshMS);
+
     return () => clearTimeout(timer);
   });
+
+  // Cleanup
+  useEffect(() => {
+    return () => {
+      dispatch(resetMembers());
+      dispatch(resetParty());
+    };
+  }, []);
 
   // Leave or delete party
   const leaveOrDelete = () => {
@@ -72,7 +82,7 @@ const WaitingRoom: React.FC = () => {
 
   // Start the party
   const start = () => {
-    dispatch(startParty(partyId || ''))
+    dispatch(startParty(partyId))
       .then(unwrapResult)
       .then(({data: party}) => navigate(`/party/${party.partyId}`))
       .catch(() => null);

@@ -1,6 +1,9 @@
 import {AnimatePresence} from 'framer-motion';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Route, Routes, useLocation} from 'react-router-dom';
+
+import {useAppDispatch} from 'state';
+import {reset} from 'state/errors/errors';
 
 import Home from './home/Home';
 import JoinParty from './join-party/JoinParty';
@@ -11,6 +14,11 @@ import ShowMovie from './show-movie/ShowMovie';
 
 const router: React.FC = () => {
   const location = useLocation();
+
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(reset());
+  }, []);
 
   return (
     <AnimatePresence exitBeforeEnter>

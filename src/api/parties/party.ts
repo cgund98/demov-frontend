@@ -18,3 +18,5 @@ export interface Party {
 }
 
 export type CreatePartyResponse = Party;
+export type GetPartyResponse = Party;
+export type StartPartyResponse = Party;

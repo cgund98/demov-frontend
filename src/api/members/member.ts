@@ -6,4 +6,5 @@ export interface Member {
   swiped: number;
 }
 
-export type GetPartyMembersResponse = Member[];
+export type ListPartyMembersResponse = Member[];
+export type JoinPartyResponse = Member;

@@ -5,12 +5,16 @@ import authReducer from './auth/auth';
 import partyReducer from './party/party';
 import membersReducer from './member/members';
 import errorsReducer from './errors/errors';
+import partyMoviesReducer from './party-movie/partyMovies';
+import movieReducer from './movie/movieReducer';
 
 const rootReducer = combineReducers({
   auth: authReducer,
   party: partyReducer,
   members: membersReducer,
   errors: errorsReducer,
+  partyMovies: partyMoviesReducer,
+  movie: movieReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
