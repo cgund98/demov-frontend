@@ -19,10 +19,24 @@ export const createParty = createAsyncThunk('party/create', async (input: {body:
   return {data: response.data};
 });
 
-export const getParty = createAsyncThunk('party/get', async (input: {partyId: string}) => {
-  const {partyId} = input;
-  const response = await axios.get<Party>(`${API_PREFIX}/parties/${partyId}`);
+export const getParty = createAsyncThunk('party/get', async (partyId: string, thunkAPI) => {
+  const response = await axios.get<Party>(`${API_PREFIX}/parties/${partyId}`, {
+    headers: getAuth(thunkAPI.getState()),
+  });
   return {data: response.data};
+});
+
+export const startParty = createAsyncThunk('party/start', async (partyId: string, thunkAPI) => {
+  const response = await axios.put<Party>(`${API_PREFIX}/parties/${partyId}`, '', {
+    headers: getAuth(thunkAPI.getState()),
+  });
+  return {data: response.data};
+});
+
+export const deleteParty = createAsyncThunk('party/delete', async (partyId: string, thunkAPI) => {
+  await axios.delete(`${API_PREFIX}/parties/${partyId}`, {
+    headers: getAuth(thunkAPI.getState()),
+  });
 });
 
 const partySlice = createSlice<State, Record<string, never>, 'party'>({
@@ -59,6 +73,31 @@ const partySlice = createSlice<State, Record<string, never>, 'party'>({
     builder.addCase(getParty.rejected, (state, {payload}) => {
       state.pending = false;
       console.log(payload);
+    });
+    // Start Party
+    builder.addCase(startParty.pending, state => {
+      state.pending = true;
+    });
+    builder.addCase(startParty.fulfilled, (state, {payload}) => {
+      // Unpack payload
+      const {data} = payload;
+      state.party = data;
+      state.pending = false;
+    });
+    builder.addCase(startParty.rejected, (state, {payload}) => {
+      state.pending = false;
+      console.log(payload);
+    });
+    // Delete member
+    builder.addCase(deleteParty.pending, state => {
+      state.pending = true;
+    });
+    builder.addCase(deleteParty.fulfilled, state => {
+      state.pending = false;
+    });
+    builder.addCase(deleteParty.rejected, (state, {payload}) => {
+      state.pending = false;
+      console.warn(payload);
     });
   },
 });

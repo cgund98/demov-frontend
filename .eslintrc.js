@@ -54,6 +54,7 @@ module.exports = {
       ],
       'no-shadow': 'off',
       '@typescript-eslint/no-shadow': ['error'],
+      '@typescript-eslint/no-floating-promises': 'off',
       'no-new': 'off',
       'no-console': 'off',
       'no-unused-vars': 'off',
