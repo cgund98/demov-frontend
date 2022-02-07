@@ -44,7 +44,7 @@ export class DemovFrontendStack extends cdk.Stack {
       },
     });
 
-    new cdk.CfnOutput(this, 'cloudfront-url', {
+    new cdk.CfnOutput(this, envSpecific('cloudfront-url'), {
       value: dist.domainName,
       description: 'The URL of the cloudfront distribution.',
       exportName: 'cloudfront-url',
