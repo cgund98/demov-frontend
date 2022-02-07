@@ -142,9 +142,9 @@ const NewParty: React.FC = () => {
           .then(payload => {
             navigate(`/party/${payload.data.partyId}/wait`);
           })
-          .catch(err => console.log(err));
+          .catch(() => null);
       })
-      .catch(err => console.log(err));
+      .catch(() => null);
   };
 
   return (

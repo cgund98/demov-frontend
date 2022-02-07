@@ -1,6 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from 'axios';
 
+import {add} from 'state/errors/errors';
 import {LoginResponse, JwtPayload} from 'api/auth/login';
 import {API_PREFIX} from 'utils/config';
 import {decodeB64} from 'utils/base64';
@@ -11,10 +12,19 @@ export interface State {
   pending: boolean;
 }
 
-export const login = createAsyncThunk('auth/login', async (input: {name: string}) => {
-  const {name} = input;
-  const response = await axios.post<LoginResponse>(`${API_PREFIX}/login`, {name});
-  return {data: response.data};
+export const login = createAsyncThunk('auth/login', async (input: {name: string}, {dispatch}) => {
+  try {
+    const {name} = input;
+    const response = await axios.post<LoginResponse>(`${API_PREFIX}/login`, {name});
+    return {data: response.data};
+
+    // Handle errors
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      dispatch(add({message: err.message}));
+    }
+    throw err;
+  }
 });
 
 const authSlice = createSlice<State, Record<string, never>, 'auth'>({
@@ -39,14 +49,13 @@ const authSlice = createSlice<State, Record<string, never>, 'auth'>({
         const decodedJwt = JSON.parse(stringJwt) as JwtPayload;
         state.id = decodedJwt.sub;
       } catch (err) {
-        console.log(err);
+        console.warn(err);
       }
 
       state.pending = false;
     });
-    builder.addCase(login.rejected, (state, {payload}) => {
+    builder.addCase(login.rejected, state => {
       state.pending = false;
-      console.log(payload);
     });
   },
 });
