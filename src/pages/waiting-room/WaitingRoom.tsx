@@ -16,6 +16,7 @@ import Container from 'components/layout/container';
 import Header from 'components/text/header';
 import UserRow from 'components/user/userRow';
 import {NotAllowed} from 'utils/errors';
+import Loading from 'components/layout/loading';
 
 const refreshMS = 1000;
 
@@ -28,6 +29,7 @@ const WaitingRoom: React.FC = () => {
 
   const dispatch = useAppDispatch();
   const {party: partyState, members: membersState, auth} = useSelector((state: RootState) => state);
+  const {startPending} = useSelector((state: RootState) => state.party);
 
   const refreshParty = () =>
     dispatch(getParty(partyId))
@@ -157,6 +159,7 @@ const WaitingRoom: React.FC = () => {
         show={modalOpen}
         onChange={confirmed => (confirmed ? leaveOrDelete() : setModalOpen(false))}
       />
+      <Loading show={startPending} />
     </Container>
   );
 };

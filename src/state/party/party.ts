@@ -10,6 +10,7 @@ import {add} from 'state/errors/errors';
 export interface State {
   party?: Party;
   pending: boolean;
+  startPending: boolean;
 }
 
 // API calls
@@ -105,6 +106,7 @@ const partySlice = createSlice({
   name: 'party',
   initialState: {
     pending: false,
+    startPending: false,
   } as State,
   reducers: {
     reset: state => {
@@ -140,16 +142,16 @@ const partySlice = createSlice({
     });
     // Start Party
     builder.addCase(startParty.pending, state => {
-      state.pending = true;
+      state.startPending = true;
     });
     builder.addCase(startParty.fulfilled, (state, {payload}) => {
       // Unpack payload
       const {data} = payload;
       state.party = data;
-      state.pending = false;
+      state.startPending = false;
     });
     builder.addCase(startParty.rejected, state => {
-      state.pending = false;
+      state.startPending = false;
     });
     // Delete party
     builder.addCase(deleteParty.pending, state => {
