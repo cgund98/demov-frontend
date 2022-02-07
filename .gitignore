@@ -21,3 +21,16 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# CDK asset staging directory
+.cdk.staging
+cdk.out
+
+cdk-exports-dev.json
+
+.env
+env.js
+env.ts
+
+# Tailwind build
+public/tailwind.output.css
