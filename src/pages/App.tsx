@@ -1,13 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter} from 'react-router-dom';
+import {Provider} from 'react-redux';
 
-function App() {
+import store from 'state';
+import ErrorWrapper from 'components/errors/errorWrapper';
+import Routes from './routes';
+
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <input className="bg-white focus:outline-none focus:shadow-outline border border-gray-300 rounded-lg py-2 px-4 block appearance-none leading-normal m-10" type="email" placeholder="jane@example.com" />
+    <div className="relative w-screen h-screen overflow-x-hidden text-gray-900">
+      <Provider store={store}>
+        <BrowserRouter>
+          <ErrorWrapper />
+          <Routes />
+        </BrowserRouter>
+      </Provider>
     </div>
   );
-}
+};
 
 export default App;
