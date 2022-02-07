@@ -30,11 +30,11 @@ const MovieCondensed: React.FC<IProps> = ({movie, score}) => {
         onClick={() => navigate(`/movie/${movie.movieId}`)}
       >
         <div className="flex flex-row space-x-2 h-full w-full">
-          <div className="basis-1/6 h-full">
+          <div className="w-1/6  h-full">
             <img className="object-cover h-full w-full " src={`${API_PREFIX}/${movie.imageUrlLR}`} />
           </div>
 
-          <div className="grow flex flex-col justify-between py-4 px-2 h-full">
+          <div className="flex grow flex-col justify-between py-4 px-2 h-full">
             <p className="text-base font-bold line-clamp-1">{movie.title}</p>
             <div className="flex flex-row space-x-2">
               {genres.map(genre => (

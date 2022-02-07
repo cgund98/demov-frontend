@@ -6,7 +6,7 @@ import partyReducer from './party/party';
 import membersReducer from './member/members';
 import errorsReducer from './errors/errors';
 import partyMoviesReducer from './party-movie/partyMovies';
-import movieReducer from './movie/movieReducer';
+import movieReducer from './movie/movie';
 
 const rootReducer = combineReducers({
   auth: authReducer,

@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import {useSelector} from 'react-redux';
 import {useNavigate, useParams} from 'react-router-dom';
 import {RootState, useAppDispatch} from 'state';
-import {getMovie, removeMovie} from 'state/movie/movieReducer';
+import {getMovie} from 'state/movie/movie';
 
 import FadeOut from '../../components/animation/fadeOut';
 import IconButton from '../../components/buttons/iconButton';
@@ -25,13 +25,6 @@ const SwipeParty: React.FC = () => {
   useEffect(() => {
     dispatch(getMovie(movieId));
   }, [movieId]);
-
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      dispatch(removeMovie(movieId));
-    };
-  }, []);
 
   const curMovie = movie.movies?.[movieId];
 

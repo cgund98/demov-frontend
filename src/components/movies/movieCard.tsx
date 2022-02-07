@@ -16,11 +16,12 @@ interface IProps {
   onChange?: (liked: boolean) => void;
   liked?: boolean;
   active?: boolean;
+  hidden?: boolean;
   movie: Movie;
 }
 
 const MovieCard: React.FC<IProps> = props => {
-  const {onChange = () => ({}), active, liked, movie} = props;
+  const {onChange = () => ({}), active, liked, movie, hidden} = props;
 
   const dragControls = useDragControls();
   const x = useMotionValue(0);
@@ -43,13 +44,13 @@ const MovieCard: React.FC<IProps> = props => {
   };
 
   return (
-    <div className="absolute inset-0">
+    <div className={`absolute inset-0 ${hidden ? 'hidden' : ''}`}>
       <motion.div
         className="w-full h-full"
         variants={variants}
         style={{x}}
         initial="initial"
-        animate="enter"
+        animate={hidden ? 'initial' : 'enter'}
         exit="exit"
         drag={active ? 'x' : false}
         dragControls={dragControls}

@@ -14,7 +14,7 @@ import Modal from 'components/input/modal';
 import {RootState, useAppDispatch} from 'state';
 import {getPartyMovies} from 'state/party-movie/partyMovies';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {getMovie} from 'state/movie/movieReducer';
+import {getMovie} from 'state/movie/movie';
 
 const refreshMS = 10 * 1000;
 
@@ -34,7 +34,7 @@ const Results: React.FC = () => {
       .then(unwrapResult)
       .then(({data}) =>
         data.forEach(m => {
-          dispatch(getMovie(m.movieId));
+          if (!movie.movies?.[m.movieId]) dispatch(getMovie(m.movieId));
         }),
       )
       .catch(() => null);
@@ -54,28 +54,39 @@ const Results: React.FC = () => {
     return () => clearTimeout(timer);
   });
 
+  const matchedMovies = partyMovies.movies?.filter(m => m.score > 0);
+
   return (
     <CascadeParent>
       <div className="flex flex-col space-y-6 pb-20">
         <FadeOut>
           <Header title="Results" />
         </FadeOut>
-        <FadeOut>
-          <AnimatePresence exitBeforeEnter>
-            <CascadeParent>
-              <div className="flow flow-col space-y-4">
-                {partyMovies.movies
-                  ?.filter(m => m.score > 0)
-                  .map(m => {
+
+        {matchedMovies?.length ? (
+          <FadeOut>
+            <AnimatePresence exitBeforeEnter>
+              <CascadeParent>
+                <div className="flow flow-col space-y-4">
+                  {matchedMovies.map(m => {
                     const movObj = movie.movies?.[m.movieId];
                     if (movObj === undefined) return null;
                     return <MovieCondensed key={m.movieId} movie={movObj} score={m.score} />;
                   })}
-              </div>
-            </CascadeParent>
-          </AnimatePresence>
-        </FadeOut>
+                </div>
+              </CascadeParent>
+            </AnimatePresence>
+          </FadeOut>
+        ) : null}
       </div>
+
+      {!matchedMovies?.length ? (
+        <div className="fixed flex flex-col align-center justify-center w-full h-full top-0 left-0">
+          <FadeOut>
+            <p className="text-gray-600 text-center">No matches yet :(</p>
+          </FadeOut>
+        </div>
+      ) : null}
 
       <div className="absolute top-0 right-0">
         <FadeOut standalone>

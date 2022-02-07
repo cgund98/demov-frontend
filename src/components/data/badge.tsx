@@ -37,7 +37,7 @@ const Badge: React.FC<IProps> = props => {
       </motion.div>
     );
 
-  return <div className="rounded-full bg-gray-100 text-gray-500 py-1 px-2 inline text-sm">{children}</div>;
+  return <div className="rounded-full bg-gray-100 text-gray-500 py-1 px-2 text-xs inline">{children}</div>;
 };
 
 export default Badge;

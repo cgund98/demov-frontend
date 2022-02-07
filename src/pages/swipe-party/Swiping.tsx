@@ -9,7 +9,7 @@ import FadeOut from 'components/animation/fadeOut';
 import {RootState, useAppDispatch} from 'state';
 import {getPartyMovies, ignore, votePartyMovie} from 'state/party-movie/partyMovies';
 import {useSelector} from 'react-redux';
-import {getMovie, removeMovie} from 'state/movie/movieReducer';
+import {getMovie, removeMovie} from 'state/movie/movie';
 import Loading from 'components/layout/loading';
 
 const pop = (array: string[]): string[] =>
@@ -47,7 +47,6 @@ const Swiping: React.FC = () => {
   }, [partyMovies.voteOrder]);
 
   const curMovieId = stack[stack.length - 1];
-  const curMovie = movie.movies?.[curMovieId];
 
   // Reset liked on stack pop
   useEffect(() => {
@@ -84,13 +83,28 @@ const Swiping: React.FC = () => {
       </div>
     );
 
+  const queue = stack.slice(stack.length - 11, stack.length);
+
   return (
     <div className="flex flex-col space-y-8 w-full h-full">
       <div className="relative h-[70vh]">
         <AnimatePresence exitBeforeEnter>
-          {curMovieId && curMovie ? (
-            <MovieCard key={curMovieId} movie={curMovie} liked={liked} onChange={onChange} active />
-          ) : null}
+          {queue.map(m => {
+            const movieObj = movie.movies?.[m];
+            if (movieObj === undefined) return null;
+            const isActive = m === curMovieId;
+
+            return (
+              <MovieCard
+                key={m}
+                movie={movieObj}
+                liked={isActive ? liked : undefined}
+                onChange={onChange}
+                hidden={!isActive}
+                active={isActive}
+              />
+            );
+          })}
         </AnimatePresence>
       </div>
 

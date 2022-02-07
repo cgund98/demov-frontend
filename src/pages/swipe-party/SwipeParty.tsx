@@ -1,5 +1,10 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
+
+import {useAppDispatch} from 'state';
+import {reset as resetMovies} from 'state/movie/movie';
+import {reset as resetParty} from 'state/party/party';
+import {reset as resetPartyMovies} from 'state/party-movie/partyMovies';
 
 import FadeOut from 'components/animation/fadeOut';
 import Container from 'components/layout/container';
@@ -15,6 +20,16 @@ const SwipeParty: React.FC = () => {
   // Avoid results page loading in again on redirect
   let content = location.pathname.split('/')[1] === 'party' ? <Swiping /> : null;
   if (mode === 'results') content = <Results />;
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    return () => {
+      dispatch(resetMovies());
+      dispatch(resetParty());
+      dispatch(resetPartyMovies());
+    };
+  }, []);
 
   return (
     <Container>
