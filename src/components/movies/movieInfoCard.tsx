@@ -53,8 +53,8 @@ const MovieInfoCard: React.FC<IProps> = ({movie}) => {
   return (
     <motion.div className="absolute inset-0 px-4 top-full -mt-20 z-20" variants={wrapperVariants} animate={animate}>
       <motion.div
-        drag="y"
-        dragConstraints={{bottom: 0, top: 0}}
+        drag={false} /* Error with custom handler */
+        dragConstraints={{bottom: 0, top: 0, left: 0, right: 0}}
         onDragEnd={(e, {offset, velocity}) => {
           const swipe = swipePower(offset.y, velocity.y);
 

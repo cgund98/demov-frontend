@@ -181,7 +181,7 @@ const NewParty: React.FC = () => {
                 <InputGroup>
                   <InputTitle>Genres</InputTitle>
                   <Dropdown
-                    label="Pick up to 3"
+                    label="Select up to 3 (overlapping)"
                     options={availGenres.map(genre => ({
                       label: capitalize(genre),
                       value: genre,

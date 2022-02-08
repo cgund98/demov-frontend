@@ -1,6 +1,6 @@
-import React from 'react';
-import {motion, useMotionValue, useDragControls, useTransform} from 'framer-motion';
-import {useWindowWidth} from '@react-hook/window-size';
+import React, {useEffect, useState} from 'react';
+import {motion, useMotionValue, useTransform} from 'framer-motion';
+import {useWindowSize, useWindowWidth} from '@react-hook/window-size';
 
 import {Movie} from 'api/movies/movie';
 import {API_PREFIX} from 'utils/config';
@@ -8,7 +8,7 @@ import {API_PREFIX} from 'utils/config';
 import MovieInfoCard from './movieInfoCard';
 
 // Swiping threshold
-const threshold = 0.4;
+const threshold = 0.275;
 const colorThreshold = 10;
 
 // Main component
@@ -23,7 +23,7 @@ interface IProps {
 const MovieCard: React.FC<IProps> = props => {
   const {onChange = () => ({}), active, liked, movie, hidden} = props;
 
-  const dragControls = useDragControls();
+  const [key, setKey] = useState(0);
   const x = useMotionValue(0);
 
   const width = useWindowWidth();
@@ -38,13 +38,21 @@ const MovieCard: React.FC<IProps> = props => {
   if (liked !== undefined) exitY = 0;
 
   const variants = {
-    initial: {y: 10, x: 0, scale: 0.95, opacity: 0},
+    initial: {y: -10, x: 0, scale: 0.95, opacity: 0},
     enter: {y: 0, x: 0, scale: 1, opacity: 1, transition: {duration: 0.35, type: 'spring'}},
     exit: {y: exitY, x: exitX, opacity: 1, transition: {duration: 0.35, type: 'spring'}},
   };
 
+  const windowSize = useWindowSize();
+
+  useEffect(() => {
+    setKey(key + 1);
+  }, [windowSize]);
+
+  // console.log(useWindowSize());
+
   return (
-    <div className={`absolute inset-0 ${hidden ? 'hidden' : ''}`}>
+    <div key={key} className={`absolute inset-0 ${hidden ? 'hidden' : ''}`}>
       <motion.div
         className="w-full h-full"
         variants={variants}
@@ -53,12 +61,11 @@ const MovieCard: React.FC<IProps> = props => {
         animate={hidden ? 'initial' : 'enter'}
         exit="exit"
         drag={active ? 'x' : false}
-        dragControls={dragControls}
-        dragListener={false}
-        dragConstraints={{left: 0, right: 0}}
+        dragConstraints={{left: 0, right: 0, top: 0, bottom: 0}}
         dragElastic={1}
         whileDrag={{scale: 1.01}}
         onDragEnd={(e, t) => {
+          if (t.point.y === 0) return;
           const relativeOffset = (t.point.x - width / 2) / width;
           if (relativeOffset > threshold) {
             onChange(true);
@@ -68,7 +75,7 @@ const MovieCard: React.FC<IProps> = props => {
         }}
       >
         <div className="w-full h-full rounded-xl overflow-hidden duration-500 ease-in-out relative shadow-xl">
-          <div className="inset-0 absolute z-10 bg-indigo-200" onPointerDown={e => active && dragControls.start(e)}>
+          <div className="inset-0 absolute z-10 bg-indigo-200">
             <motion.div className="absolute bottom-0 inset-0 z-10 bg-red-500" style={{opacity: redOpacity}} />
             <motion.div className="absolute bottom-0 inset-0 z-10 bg-green-500" style={{opacity: greenOpacity}} />
             <img className="object-cover h-full w-full " src={`${API_PREFIX}/${movie.imageUrlHR}`} />

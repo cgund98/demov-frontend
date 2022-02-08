@@ -9,9 +9,9 @@ interface IProps {
 }
 
 const variants = {
-  initial: {scale: 0},
-  enter: {scale: '100%', transition: {duration: 0.45, type: 'spring'}},
-  exit: {scale: 0, transition: {duration: 0.25}},
+  initial: {opacity: 0},
+  enter: {opacity: 1, transition: {duration: 0.45, type: 'spring'}},
+  exit: {opacity: 0, transition: {duration: 0.25}},
 };
 
 const Badge: React.FC<IProps> = props => {

@@ -2,8 +2,7 @@ import * as cdk from '@aws-cdk/core';
 import * as s3deploy from '@aws-cdk/aws-s3-deployment';
 import * as apigateway from '@aws-cdk/aws-apigateway';
 import * as acm from '@aws-cdk/aws-certificatemanager';
-// import {HttpUrlIntegration} from '@aws-cdk/aws-apigateway-integrations';
-import {Bucket, BucketAccessControl} from '@aws-cdk/aws-s3';
+import {Bucket} from '@aws-cdk/aws-s3';
 import {Distribution, OriginAccessIdentity} from '@aws-cdk/aws-cloudfront';
 import {S3Origin} from '@aws-cdk/aws-cloudfront-origins';
 import * as path from 'path';
@@ -18,11 +17,8 @@ export class DemovFrontendStack extends cdk.Stack {
     const bucket = new Bucket(this, envSpecific('demov-frontend'), {
       websiteIndexDocument: 'index.html',
       publicReadAccess: true,
-    });
-
-    new s3deploy.BucketDeployment(this, envSpecific('demov-frontend-deployment'), {
-      sources: [s3deploy.Source.asset(path.join(__dirname, '/../build'))],
-      destinationBucket: bucket,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
     });
 
     const originAccessIdentity = new OriginAccessIdentity(this, envSpecific('demov-frontend-origin-access'));
@@ -48,6 +44,13 @@ export class DemovFrontendStack extends cdk.Stack {
       value: dist.domainName,
       description: 'The URL of the cloudfront distribution.',
       exportName: envSpecific('cloudfront-url'),
+    });
+
+    // Bucket deployment
+    new s3deploy.BucketDeployment(this, envSpecific('demov-frontend-deployment'), {
+      sources: [s3deploy.Source.asset(path.join(__dirname, '/../build'))],
+      distribution: dist,
+      destinationBucket: bucket,
     });
 
     // API gateway
