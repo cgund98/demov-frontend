@@ -88,7 +88,7 @@ const Swiping: React.FC = () => {
   return (
     <div className="flex flex-col space-y-8 w-full h-full">
       <div className="relative h-[70vh]">
-        <AnimatePresence exitBeforeEnter>
+        <AnimatePresence>
           {queue.map(m => {
             const movieObj = movie.movies?.[m];
             if (movieObj === undefined) return null;

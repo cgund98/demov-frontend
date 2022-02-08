@@ -95,5 +95,5 @@
     "tailwindcss": "^3.0.18",
     "ts-node": "^10.4.0"
   },
-  "proxy": "https://dev.demov.app"
+  "proxy": "https://api-dev.demov.app"
 }

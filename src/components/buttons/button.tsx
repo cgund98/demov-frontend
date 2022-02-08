@@ -65,7 +65,7 @@ const Button: React.FC<IProps> = props => {
 
   // Render
   return (
-    <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}}>
+    <motion.div whileHover={disabled ? undefined : {scale: 1.05}} whileTap={disabled ? undefined : {scale: 0.95}}>
       {contents}
     </motion.div>
   );
